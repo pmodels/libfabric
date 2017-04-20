@@ -146,6 +146,7 @@ src_libfabric_la_SOURCES =			\
 	include/ofi_recvwin.h			\
 	include/ofi_rbuf.h			\
 	include/ofi_shm.h			\
+	include/ofi_shm2.h			\
 	include/ofi_signal.h			\
 	include/ofi_epoll.h			\
 	include/ofi_tree.h			\
@@ -415,6 +416,7 @@ include prov/rxm/Makefile.include
 include prov/mrail/Makefile.include
 include prov/rxd/Makefile.include
 include prov/bgq/Makefile.include
+include prov/opa1x/Makefile.include
 include prov/shm/Makefile.include
 include prov/tcp/Makefile.include
 include prov/rstream/Makefile.include
