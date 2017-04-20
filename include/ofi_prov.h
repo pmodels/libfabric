@@ -267,4 +267,15 @@ HOOK_HMEM_INI ;
 #  define HOOK_NOOP_INIT fi_hook_noop_ini()
 HOOK_NOOP_INI ;
 
+#if (HAVE_OPX) && (HAVE_OPX_DL)
+#  define OPX_INI FI_EXT_INI
+#  define OPX_INIT NULL
+#elif (HAVE_OPX)
+#  define OPX_INI INI_SIG(fi_opx_ini)
+#  define OPX_INIT fi_opx_ini()
+OPX_INI ;
+#else
+#  define OPX_INIT NULL
+#endif
+
 #endif /* _OFI_PROV_H_ */

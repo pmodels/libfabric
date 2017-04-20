@@ -663,13 +663,13 @@ AC_ARG_WITH([gdrcopy],
 			    and runtime libraries are installed.])],
 	    [], [])
 
-AS_IF([test -n "$with_gdrcopy" && test x"$with_gdrcopy" != x"no" && test "$have_libcuda" = "0"],
+AS_IF([test -n "$with_gdrcopy" && test x"$with_gdrcopy" != x"no" && test "$have_libcuda" == "0"],
 	[AC_MSG_ERROR([gdrcopy is requested but cuda is not requested or cuda runtime is not available.])],
 	[])
 
 have_gdrcopy=0
-AS_IF([test "$have_libcuda" = "1" && test x"$with_gdrcopy" != x"no"],
-	[AS_IF([test x"$with_gdrcopy" = x"yes"],[gdrcopy_dir=""],[gdrcopy_dir=$with_gdrcopy])
+AS_IF([test "$have_libcuda" == "1" && test x"$with_gdrcopy" != x"no"],
+	[AS_IF([test x"$with_gdrcopy" == x"yes"],[gdrcopy_dir=""],[gdrcopy_dir=$with_gdrcopy])
 	 FI_CHECK_PACKAGE([gdrcopy],
 			  [gdrapi.h],
 			  [gdrapi],
@@ -743,6 +743,15 @@ AS_IF([test x"$enable_rocr_dlopen" != x"yes"], [LIBS="$LIBS $rocr_LIBS"])
 
 AC_CHECK_SIZEOF([void *])
 
+dnl patching ${archive_cmds} to affect generation of file "libtool" to fix linking with clang
+dnl allows for building with clang lto and fast linking with non gnu ld
+dnl --> checking if the linker (clang) is GNU ld... no
+AS_CASE(["$LD"],
+    [*clang*],
+        [AS_CASE(["${host_os}"],
+            [*linux*],
+            [archive_cmds='$CC -shared $pic_flag $libobjs $deplibs $compiler_flags $wl-soname $wl$soname $wl-version-script $wl$libname.map -o $lib'])])
+
 dnl Provider-specific checks
 FI_PROVIDER_INIT
 FI_PROVIDER_SETUP([psm])
@@ -766,6 +775,7 @@ FI_PROVIDER_SETUP([rstream])
 FI_PROVIDER_SETUP([perf])
 FI_PROVIDER_SETUP([hook_debug])
 FI_PROVIDER_SETUP([hook_hmem])
+FI_PROVIDER_SETUP([opx])
 FI_PROVIDER_FINI
 dnl Configure the .pc file
 FI_PROVIDER_SETUP_PC
