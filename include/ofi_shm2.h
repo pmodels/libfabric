@@ -67,7 +67,7 @@ ofi_shm2_x86_atomic_int_cas(int * var, int old_value, int new_value) {
 #define OFI_SHM2_MAX_CONN_NUM (UINT8_MAX)
 
 #define OFI_SHM2_SEGMENT_NAME_MAX_LENGTH (512)
-#define OFI_SHM2_SEGMENT_NAME_PREFIX "/hfi1.shm."
+#define OFI_SHM2_SEGMENT_NAME_PREFIX "/ofi.shm."
 
 struct ofi_shm2_connection {
 	void 				*segment_ptr;
@@ -75,6 +75,7 @@ struct ofi_shm2_connection {
 };
 
 struct ofi_shm2_tx {
+	struct ofi_shm2_fifo		*fifo[OFI_SHM2_MAX_CONN_NUM];
 	struct ofi_shm2_connection	connection[OFI_SHM2_MAX_CONN_NUM];
 	struct fi_provider		*prov;
 };
@@ -85,6 +86,7 @@ struct ofi_shm2_rx {
 	void				*segment_ptr;
 	size_t				segment_size;
 	char				segment_key[OFI_SHM2_SEGMENT_NAME_MAX_LENGTH];
+	struct fi_provider		*prov;
 };
 
 struct ofi_shm2_packet_metadata {
@@ -143,6 +145,7 @@ ssize_t ofi_shm2_rx_init (struct ofi_shm2_rx *rx,
 	rx->segment_ptr = NULL;
 	rx->segment_size = 0;
 	rx->local_ticket = 0;
+	rx->prov = prov;
 
 	memset(rx->segment_key, 0, OFI_SHM2_SEGMENT_NAME_MAX_LENGTH);
 
@@ -228,6 +231,7 @@ ssize_t ofi_shm2_tx_init (struct ofi_shm2_tx *tx,
 	for (i = 0; i < OFI_SHM2_MAX_CONN_NUM; ++i) {
 		tx->connection[i].segment_ptr = NULL;
 		tx->connection[i].segment_size = 0;
+		tx->fifo[i] = NULL;
 	}
 
 	tx->prov = prov;
@@ -279,6 +283,7 @@ ssize_t ofi_shm2_tx_connect (struct ofi_shm2_tx *tx,
 
 	tx->connection[rx_id].segment_ptr = segment_ptr;
 	tx->connection[rx_id].segment_size = segment_size;
+	tx->fifo[rx_id] = (struct ofi_shm2_fifo *)(((uintptr_t)segment_ptr + 64) & (~0x03Full));
 
 	FI_LOG(tx->prov, FI_LOG_DEBUG, FI_LOG_FABRIC,
 		"SHM connection to %u context passed. Segment (%s), %d, (%p)\n",
@@ -305,6 +310,7 @@ ssize_t ofi_shm2_tx_fini (struct ofi_shm2_tx *tx)
 				tx->connection[i].segment_size);
 			tx->connection[i].segment_ptr = NULL;
 			tx->connection[i].segment_size = 0;
+			tx->fifo[i] = NULL;
 		}
 	}
 
@@ -317,14 +323,14 @@ static inline
 void * ofi_shm2_tx_next (struct ofi_shm2_tx *tx, unsigned peer,
 		const unsigned fifo_size, const unsigned packet_size)
 {
-	struct ofi_shm2_fifo *tx_fifo = tx->connection[peer].segment_ptr;
+	struct ofi_shm2_fifo *tx_fifo = tx->fifo[peer];
 
 #ifndef NDEBUG
-	if (unlikely(fifo_size != tx->fifo_size)) {
-		FI_WARN(tx->prov, FI_LOG_EP_DATA, "shm fifo size mismatch\n"); abort();
+	if (unlikely(fifo_size != tx_fifo->metadata.fifo_size)) {
+		FI_WARN(tx->prov, FI_LOG_EP_DATA, "shm fifo size mismatch (%u != %lu)\n", fifo_size, tx_fifo->metadata.fifo_size); abort();
 	}
-	if (unlikely(packet_size != tx_fifo->packet_size)) {
-		FI_WARN(tx->prov, FI_LOG_EP_DATA, "shm packet size mismatch\n"); abort();
+	if (unlikely(packet_size != tx_fifo->metadata.packet_size)) {
+		FI_WARN(tx->prov, FI_LOG_EP_DATA, "shm packet size mismatch (%u != %lu)\n", packet_size, tx_fifo->metadata.packet_size); abort();
 	}
 #endif
 
@@ -363,14 +369,14 @@ static inline
 void * ofi_shm2_rx_next (struct ofi_shm2_rx *rx,
 		const unsigned fifo_size, const unsigned packet_size)
 {
-	struct ofi_shm2_fifo *rx_fifo = rx->segment_ptr;
+	struct ofi_shm2_fifo *rx_fifo = rx->fifo;
 
 #ifndef NDEBUG
-	if (unlikely(fifo_size != rx->fifo_size)) {
-		FI_WARN(rx->prov, FI_LOG_EP_DATA, "shm fifo size mismatch\n"); abort();
+	if (unlikely(fifo_size != rx_fifo->metadata.fifo_size)) {
+		FI_WARN(rx->prov, FI_LOG_EP_DATA, "shm fifo size mismatch (%u != %lu)\n", fifo_size, rx_fifo->metadata.fifo_size); abort();
 	}
-	if (unlikely(packet_size != rx_fifo->packet_size)) {
-		FI_WARN(rx->prov, FI_LOG_EP_DATA, "shm packet size mismatch\n"); abort();
+	if (unlikely(packet_size != rx_fifo->metadata.packet_size)) {
+		FI_WARN(rx->prov, FI_LOG_EP_DATA, "shm packet size mismatch (%u != %lu)\n", packet_size, rx_fifo->metadata.packet_size); abort();
 	}
 #endif
 
