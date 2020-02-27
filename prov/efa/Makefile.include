@@ -189,8 +189,10 @@ efa_CPPFLAGS += \
 	-I$(top_srcdir)/prov/efa/src/dgram/ \
 	-I$(top_srcdir)/prov/efa/src/rdm/
 
+if !EMBEDDED
 rdmainclude_HEADERS += \
 	prov/efa/src/fi_ext_efa.h
+endif
 
 if HAVE_EFA_DL
 pkglib_LTLIBRARIES += libefa-fi.la

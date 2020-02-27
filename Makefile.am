@@ -17,6 +17,7 @@ AM_CPPFLAGS = \
 noinst_LTLIBRARIES =
 lib_LTLIBRARIES =
 noinst_PROGRAMS =
+bin_PROGRAMS =
 
 if EMBEDDED
 noinst_LTLIBRARIES += src/libfabric.la
@@ -36,11 +37,13 @@ else !HAVE_LD_VERSION_SCRIPT
     libfabric_version_script =
 endif !HAVE_LD_VERSION_SCRIPT
 
+if !EMBEDDED
 rdmaincludedir = $(includedir)/rdma
 providersincludedir = $(rdmaincludedir)/providers
 
 rdmainclude_HEADERS =
 providersinclude_HEADERS =
+endif
 
 # internal utility functions shared by in-tree providers:
 common_srcs =				\
@@ -148,10 +151,17 @@ common_hook_srcs =				\
 # ensure dl-built providers link back to libfabric
 linkback = src/libfabric.la
 
-bin_PROGRAMS = \
+if EMBEDDED
+noinst_PROGRAMS += \
 	util/fi_info \
 	util/fi_strerror \
 	util/fi_pingpong
+else
+bin_PROGRAMS += \
+	util/fi_info \
+	util/fi_strerror \
+	util/fi_pingpong
+endif
 
 bin_SCRIPTS =
 
@@ -227,6 +237,7 @@ src_libfabric_la_LDFLAGS += -version-info 27:0:26
 endif
 src_libfabric_la_LDFLAGS += -export-dynamic \
 			   $(libfabric_version_script)
+if !EMBEDDED
 rdmainclude_HEADERS += \
 	$(top_srcdir)/include/rdma/fabric.h \
 	$(top_srcdir)/include/rdma/fi_atomic.h \
@@ -263,6 +274,7 @@ else
 nodist_rdmainclude_HEADERS += $(top_srcdir)/prov/$(PROVIDER_DIRECT)/include/rdma/fi_direct.h
 endif
 endif HAVE_DIRECT
+endif !EMBEDDED
 
 real_man_pages = \
         man/man1/fi_info.1 \
@@ -438,8 +450,10 @@ windows_files = \
 	prov/verbs/include/windows \
 	prov/verbs/src/windows
 
+if !EMBEDDED
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libfabric.pc
+endif
 
 nroff:
 	@for file in $(real_man_pages) $(prov_install_man_pages); do \

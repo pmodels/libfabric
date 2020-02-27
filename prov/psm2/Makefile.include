@@ -135,8 +135,10 @@ src_libfabric_la_LIBADD += libpsmx2.la
 src_libfabric_la_DEPENDENCIES += libpsmx2.la
 endif !HAVE_PSM2_DL
 
+if !EMBEDDED
 rdmainclude_HEADERS += prov/psm2/include/fi_ext_psm2.h
 prov_install_man_pages += man/man7/fi_psm2.7
+endif
 
 endif HAVE_PSM2
 
