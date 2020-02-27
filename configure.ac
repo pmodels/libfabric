@@ -14,7 +14,7 @@ AC_CONFIG_SRCDIR([src/fabric.c])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR(config)
 AC_CONFIG_HEADERS(config.h)
-AM_INIT_AUTOMAKE([1.11 dist-bzip2 foreign -Wall -Werror subdir-objects parallel-tests tar-pax])
+AM_INIT_AUTOMAKE([1.11 dist-bzip2 foreign -Wall -Werror subdir-objects parallel-tests tar-pax no-installman])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 m4_include(config/fi_check_package.m4)
 m4_include(config/fi_strip_optflags.m4)
@@ -415,6 +415,7 @@ AC_ARG_ENABLE([embedded],
                icc_symver_hack=1],
 	      [enable_embedded=no])
 AM_CONDITIONAL([EMBEDDED], [test x"$enable_embedded" = x"yes"])
+AM_COND_IF([EMBEDDED], [AC_DEFINE([ENABLE_EMBEDDED], 1, [define if building as embedded library])])
 
 AM_CONDITIONAL(HAVE_LD_VERSION_SCRIPT, test "$ac_cv_version_script" = "yes")
 

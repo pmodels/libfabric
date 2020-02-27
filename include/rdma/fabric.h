@@ -63,6 +63,12 @@
 #define EXTERNALLY_VISIBLE
 #endif
 
+#ifdef ENABLE_EMBEDDED
+#define API_PREFIX
+#else
+#define API_PREFIX __attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
+#endif
+
 #if defined(_WIN32)
 #include <BaseTsd.h>
 #include <windows.h>
