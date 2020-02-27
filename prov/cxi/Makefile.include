@@ -49,8 +49,10 @@ _cxi_headers = \
 	prov/cxi/include/cxip_faults.h \
 	prov/cxi/include/fi_cxi_ext.h
 
+if !EMBEDDED
 rdmainclude_HEADERS += \
 	prov/cxi/include/fi_cxi_ext.h
+endif
 
 # Stand-alone srun tests for hardware testing environment
 noinst_PROGRAMS += prov/cxi/test/multinode/test_frmwk

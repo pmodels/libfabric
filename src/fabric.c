@@ -1046,7 +1046,7 @@ unlock:
 	pthread_mutex_unlock(&common_locks.ini_lock);
 }
 
-__attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
+API_PREFIX
 void DEFAULT_SYMVER_PRE(fi_freeinfo)(struct fi_info *info)
 {
 	struct fi_info *next;
@@ -1314,7 +1314,7 @@ static int ofi_layering_ok(const struct fi_provider *provider,
 	return !strcasecmp(provider->name, prov_name);
 }
 
-__attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
+API_PREFIX
 int DEFAULT_SYMVER_PRE(fi_getinfo)(uint32_t version, const char *node,
 		const char *service, uint64_t flags,
 		const struct fi_info *hints, struct fi_info **info)
@@ -1445,7 +1445,7 @@ err:
 }
 
 
-__attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
+API_PREFIX
 struct fi_info *DEFAULT_SYMVER_PRE(fi_dupinfo)(const struct fi_info *info)
 {
 	struct fi_info *dup;
@@ -1552,7 +1552,7 @@ fail:
 }
 DEFAULT_SYMVER(fi_dupinfo_, fi_dupinfo, FABRIC_1.8);
 
-__attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
+API_PREFIX
 int DEFAULT_SYMVER_PRE(fi_fabric)(struct fi_fabric_attr *attr,
 		struct fid_fabric **fabric, void *context)
 {
@@ -1605,7 +1605,7 @@ int DEFAULT_SYMVER_PRE(fi_fabric)(struct fi_fabric_attr *attr,
 }
 DEFAULT_SYMVER(fi_fabric_, fi_fabric, FABRIC_1.1);
 
-__attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
+API_PREFIX
 int DEFAULT_SYMVER_PRE(fi_fabric2)(struct fi_info *info,
 		struct fid_fabric **fabric, uint64_t flags, void *context)
 {
@@ -1616,14 +1616,14 @@ int DEFAULT_SYMVER_PRE(fi_fabric2)(struct fi_info *info,
 }
 DEFAULT_SYMVER(fi_fabric2_, fi_fabric2, FABRIC_1.8);
 
-__attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
+API_PREFIX
 uint32_t DEFAULT_SYMVER_PRE(fi_version)(void)
 {
 	return FI_VERSION(FI_MAJOR_VERSION, FI_MINOR_VERSION);
 }
 DEFAULT_SYMVER(fi_version_, fi_version, FABRIC_1.0);
 
-__attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
+API_PREFIX
 int DEFAULT_SYMVER_PRE(fi_open)(uint32_t version, const char *name,
 		void *attr, size_t attr_len, uint64_t flags,
 		struct fid **fid, void *context)
@@ -1658,7 +1658,7 @@ static const char *const errstr[] = {
 	[FI_EFIREWALLADDR - FI_ERRNO_OFFSET] = "Host unreacheable due to firewall",
 };
 
-__attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
+API_PREFIX
 const char *DEFAULT_SYMVER_PRE(fi_strerror)(int errnum)
 {
 	if (errnum < 0)
