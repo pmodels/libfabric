@@ -14,6 +14,8 @@ AM_CPPFLAGS = \
 
 noinst_LTLIBRARIES =
 lib_LTLIBRARIES =
+noinst_PROGRAMS =
+bin_PROGRAMS =
 
 if EMBEDDED
 noinst_LTLIBRARIES += src/libfabric.la
@@ -97,10 +99,17 @@ endif
 # ensure dl-built providers link back to libfabric
 linkback = src/libfabric.la
 
-bin_PROGRAMS = \
+if EMBEDDED
+noinst_PROGRAMS += \
 	util/fi_info \
 	util/fi_strerror \
 	util/fi_pingpong
+else
+bin_PROGRAMS += \
+	util/fi_info \
+	util/fi_strerror \
+	util/fi_pingpong
+endif
 
 bin_SCRIPTS =
 
