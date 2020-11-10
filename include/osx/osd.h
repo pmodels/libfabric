@@ -65,6 +65,9 @@
 extern "C" {
 #endif
 
+#undef OFI_MAX_SOCKET_BUF_SIZE /* override unix/osd.h */
+#define OFI_MAX_SOCKET_BUF_SIZE INT_MAX
+
 static inline int ofi_shm_remap(struct util_shm *shm, size_t newsize, void **mapped)
 {
 	return -1;
