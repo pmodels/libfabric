@@ -682,8 +682,7 @@ static void ofi_tostr_cq_event_flags(char *buf, uint64_t flags)
 	ofi_remove_comma(buf);
 }
 
-__attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
-char *DEFAULT_SYMVER_PRE(fi_tostr)(const void *data, enum fi_type datatype)
+char *fi_tostr(const void *data, enum fi_type datatype)
 {
 	static char *buf = NULL;
 	const uint64_t *val64;
@@ -787,7 +786,6 @@ char *DEFAULT_SYMVER_PRE(fi_tostr)(const void *data, enum fi_type datatype)
 	}
 	return buf;
 }
-DEFAULT_SYMVER(fi_tostr_, fi_tostr, FABRIC_1.0);
 
 #undef CASEENUMSTR
 #undef IFFLAGSTR
