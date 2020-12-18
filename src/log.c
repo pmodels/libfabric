@@ -138,8 +138,7 @@ void fi_log_fini(void)
 	ofi_free_filter(&prov_log_filter);
 }
 
-__attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
-int DEFAULT_SYMVER_PRE(fi_log_enabled)(const struct fi_provider *prov,
+int fi_log_enabled(const struct fi_provider *prov,
 		enum fi_log_level level,
 		enum fi_log_subsys subsys)
 {
@@ -149,10 +148,8 @@ int DEFAULT_SYMVER_PRE(fi_log_enabled)(const struct fi_provider *prov,
 	return ((FI_LOG_TAG(ctx->disable_logging, level, subsys) & log_mask) ==
 		FI_LOG_TAG(ctx->disable_logging, level, subsys));
 }
-DEFAULT_SYMVER(fi_log_enabled_, fi_log_enabled, FABRIC_1.0);
 
-__attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
-int DEFAULT_SYMVER_PRE(fi_log_ready)(const struct fi_provider *prov,
+int fi_log_ready(const struct fi_provider *prov,
 		enum fi_log_level level, enum fi_log_subsys subsys,
 		uint64_t *showtime)
 {
@@ -167,10 +164,8 @@ int DEFAULT_SYMVER_PRE(fi_log_ready)(const struct fi_provider *prov,
 	}
 	return false;
 }
-CURRENT_SYMVER(fi_log_ready_, fi_log_ready);
 
-__attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
-void DEFAULT_SYMVER_PRE(fi_log)(const struct fi_provider *prov, enum fi_log_level level,
+void fi_log(const struct fi_provider *prov, enum fi_log_level level,
 		enum fi_log_subsys subsys, const char *func, int line,
 		const char *fmt, ...)
 {
@@ -190,4 +185,3 @@ void DEFAULT_SYMVER_PRE(fi_log)(const struct fi_provider *prov, enum fi_log_leve
 
 	fprintf(stderr, "%s", buf);
 }
-DEFAULT_SYMVER(fi_log_, fi_log, FABRIC_1.0);
