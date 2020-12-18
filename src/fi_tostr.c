@@ -739,9 +739,7 @@ ofi_tostr_hmem_iface(char *buf, size_t len, enum fi_hmem_iface iface)
 	}
 }
 
-__attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
-char *DEFAULT_SYMVER_PRE(fi_tostr_r)(char *buf, size_t len,
-				     const void *data, enum fi_type datatype)
+char *fi_tostr_r(char *buf, size_t len, const void *data, enum fi_type datatype)
 {
 	const uint64_t *val64;
 	const uint32_t *val32;
@@ -842,10 +840,8 @@ char *DEFAULT_SYMVER_PRE(fi_tostr_r)(char *buf, size_t len,
 	}
 	return buf;
 }
-CURRENT_SYMVER(fi_tostr_r_, fi_tostr_r);
 
-__attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
-char *DEFAULT_SYMVER_PRE(fi_tostr)(const void *data, enum fi_type datatype)
+char *fi_tostr(const void *data, enum fi_type datatype)
 {
 	static char *buf = NULL;
 	size_t len = 8192;
@@ -858,4 +854,3 @@ char *DEFAULT_SYMVER_PRE(fi_tostr)(const void *data, enum fi_type datatype)
 
 	return fi_tostr_r(buf, len, data, datatype);
 }
-DEFAULT_SYMVER(fi_tostr_, fi_tostr, FABRIC_1.0);
