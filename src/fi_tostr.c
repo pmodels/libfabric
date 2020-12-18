@@ -696,8 +696,7 @@ static void ofi_tostr_hmem_iface(char *buf, enum fi_hmem_iface iface)
 	}
 }
 
-__attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
-char *DEFAULT_SYMVER_PRE(fi_tostr)(const void *data, enum fi_type datatype)
+char *fi_tostr(const void *data, enum fi_type datatype)
 {
 	static char *buf = NULL;
 	const uint64_t *val64;
@@ -804,7 +803,6 @@ char *DEFAULT_SYMVER_PRE(fi_tostr)(const void *data, enum fi_type datatype)
 	}
 	return buf;
 }
-DEFAULT_SYMVER(fi_tostr_, fi_tostr, FABRIC_1.0);
 
 #undef CASEENUMSTR
 #undef IFFLAGSTR
