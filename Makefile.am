@@ -36,9 +36,11 @@ else !HAVE_LD_VERSION_SCRIPT
     libfabric_version_script =
 endif !HAVE_LD_VERSION_SCRIPT
 
+if !EMBEDDED
 rdmaincludedir = $(includedir)/rdma
 
 rdmainclude_HEADERS =
+endif
 
 # internal utility functions shared by in-tree providers:
 common_srcs =				\
@@ -197,6 +199,7 @@ src_libfabric_la_LDFLAGS += -version-info 15:2:14
 endif
 src_libfabric_la_LDFLAGS += -export-dynamic \
 			   $(libfabric_version_script)
+if !EMBEDDED
 rdmainclude_HEADERS += \
 	$(top_srcdir)/include/rdma/fabric.h \
 	$(top_srcdir)/include/rdma/fi_atomic.h \
@@ -227,6 +230,7 @@ else
 nodist_rdmainclude_HEADERS += $(top_srcdir)/prov/$(PROVIDER_DIRECT)/include/rdma/fi_direct.h
 endif
 endif HAVE_DIRECT
+endif !EMBEDDED
 
 real_man_pages = \
         man/man1/fi_info.1 \
@@ -384,8 +388,10 @@ dummy_man_pages = \
         man/man3/fi_writemsg.3 \
         man/man3/fi_writev.3
 
+if !EMBEDDED
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libfabric.pc
+endif
 
 nroff:
 	@for file in $(real_man_pages) $(prov_install_man_pages); do \
