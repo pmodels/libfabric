@@ -614,13 +614,13 @@ AC_ARG_WITH([gdrcopy],
 			    and runtime libraries are installed.])],
 	    [], [])
 
-AS_IF([test -n "$with_gdrcopy" && test x"$with_gdrcopy" != x"no" && test "$have_libcuda" = "0"],
+AS_IF([test -n "$with_gdrcopy" && test x"$with_gdrcopy" != x"no" && test "$have_libcuda" == "0"],
 	[AC_MSG_ERROR([gdrcopy is requested but cuda is not requested or cuda runtime is not available.])],
 	[])
 
 have_gdrcopy=0
-AS_IF([test "$have_libcuda" = "1" && test x"$with_gdrcopy" != x"no"],
-	[AS_IF([test x"$with_gdrcopy" = x"yes"],[gdrcopy_dir=""],[gdrcopy_dir=$with_gdrcopy])
+AS_IF([test "$have_libcuda" == "1" && test x"$with_gdrcopy" != x"no"],
+	[AS_IF([test x"$with_gdrcopy" == x"yes"],[gdrcopy_dir=""],[gdrcopy_dir=$with_gdrcopy])
 	 FI_CHECK_PACKAGE([gdrcopy],
 			  [gdrapi.h],
 			  [gdrapi],
