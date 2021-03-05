@@ -248,7 +248,7 @@ struct fi_opa1x_reliability_rx_uepkt {
 
 	uint8_t					payload[0];
 
-} __attribute__((__packed__));
+} __attribute__((__packed__)) __attribute__((aligned(64)));
 
 
 

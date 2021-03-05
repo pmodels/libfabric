@@ -244,9 +244,9 @@ void fi_opa1x_hfi1_tx_reliability_inject (struct fid_ep *ep,
 #ifdef OPA1X_RELIABILITY_DEBUG
 			if (opcode == FI_OPA1X_HFI_UD_OPCODE_RELIABILITY_PING) {
 				fprintf(stderr, "(tx) flow__ %016lx inj ping dropped; no credits\n", key);
-			} else if (opcode == FI_OPA1X_UD_BTH_OPCODE_RELIABILITY_ACK) {
+			} else if (opcode == FI_OPA1X_HFI_UD_OPCODE_RELIABILITY_ACK) {
 				fprintf(stderr, "(rx) flow__ %016lx inj ack dropped; no credits\n", key);
-			} else if (opcode == FI_OPA1X_UD_BTH_OPCODE_RELIABILITY_NACK) {
+			} else if (opcode == FI_OPA1X_HFI_UD_OPCODE_RELIABILITY_NACK) {
 				fprintf(stderr, "(rx) flow__ %016lx inj nack dropped; no credits\n", key);
 			} else {
 				fprintf(stderr, "%s:%s():%d bad opcode (%lu) .. abort\n", __FILE__, __func__, __LINE__, opcode);
@@ -339,7 +339,7 @@ void fi_opa1x_hfi1_rx_reliability_ping (struct fid_ep *ep,
 
 
 #ifdef OPA1X_RELIABILITY_DEBUG
-	fprintf(stderr, "(rx) flow__ %016lx rcv ping %08lu..%08lu\n", key, hdr->reliability.psn_start, hdr->reliability.psn_start + hdr->reliability.psn_count - 1);
+	fprintf(stderr, "(rx) flow__ %016lx rcv ping %08lu..%08lu\n", key, psn_start, psn_start + psn_count - 1);
 #endif
 	void * itr = NULL;
 	itr = rbtFind(service->rx.flow, (void*)key);

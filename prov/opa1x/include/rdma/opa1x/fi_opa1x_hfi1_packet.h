@@ -612,7 +612,7 @@ struct fi_opa1x_hfi1_ue_packet {
 	struct fi_opa1x_hfi1_ue_packet *	next;
 	union fi_opa1x_hfi1_packet_hdr		hdr;
 	union fi_opa1x_hfi1_packet_payload	payload;
-} __attribute__((__packed__));
+} __attribute__((__packed__)) __attribute__((aligned(64)));
 
 struct fi_opa1x_hfi1_ue_packet_slist {
 	struct fi_opa1x_hfi1_ue_packet *	head;
