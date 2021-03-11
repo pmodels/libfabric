@@ -770,6 +770,7 @@ void fi_opa1x_reliability_service_do_replay (struct fi_opa1x_reliability_service
 
 	union fi_opa1x_hfi1_pio_state pio_state;
 	uint64_t * const pio_state_ptr = (uint64_t*)service->tx.hfi1.pio_state;
+    assert(pio_state_ptr != NULL);
 	pio_state.qw0 = *pio_state_ptr;
 
 	FI_OPA1X_HFI1_UPDATE_CREDITS(pio_state, service->tx.hfi1.pio_credits_addr);
@@ -1407,8 +1408,28 @@ uint8_t fi_opa1x_reliability_service_init (struct fi_opa1x_reliability_service *
 
 		if (hfi1 == NULL) abort();
 
-		service->lid_be = (uint32_t)htons(hfi1->lid);
 		service->reliability_kind = reliability_kind;
+		service->context = hfi1;
+
+		service->lid_be = (uint32_t)htons(hfi1->lid);
+		/*
+		 * COPY the rx static information from the hfi context structure.
+		 * This is to improve cache layout.
+		 */
+		service->rx.hfi1.hdrq.rhf_base = hfi1->info.rxe.hdrq.rhf_base;
+		service->rx.hfi1.hdrq.head_register = hfi1->info.rxe.hdrq.head_register;
+		service->rx.hfi1.egrq.base_addr = hfi1->info.rxe.egrq.base_addr;
+		service->rx.hfi1.egrq.elemsz = hfi1->info.rxe.egrq.elemsz;
+		service->rx.hfi1.egrq.last_egrbfr_index = 0;
+		service->rx.hfi1.egrq.head_register = hfi1->info.rxe.egrq.head_register;
+
+		service->tx.hfi1.pio_state = &hfi1->state.pio;
+
+		/* the 'info' fields do not change; the values can be safely copied */
+		service->tx.hfi1.pio_scb_sop_first = hfi1->info.pio.scb_sop_first;
+		service->tx.hfi1.pio_scb_first = hfi1->info.pio.scb_first;
+		service->tx.hfi1.pio_credits_addr = hfi1->info.pio.credits_addr;
+
 		origin_reliability_rx = hfi1->info.rxe.id;
 
 	} else if (OFI_RELIABILITY_KIND_NONE == reliability_kind) {
