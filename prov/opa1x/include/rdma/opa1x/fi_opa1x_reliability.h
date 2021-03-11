@@ -280,7 +280,7 @@ struct fi_opa1x_reliability_client_state {					/* 14 qws = 112 bytes */
 	uint16_t					drop_count;
 	uint16_t					drop_mask;
 	enum ofi_reliability_kind			reliability_kind;
-} __attribute__((__packed__));
+} __attribute__((__packed__)) __attribute__((aligned(64)));
 
 
 
