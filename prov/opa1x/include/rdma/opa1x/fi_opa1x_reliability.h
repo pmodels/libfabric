@@ -470,6 +470,8 @@ fi_opa1x_reliability_client_replay_allocate(struct fi_opa1x_reliability_client_s
 	unsigned loop = 0;
 #endif
 	while (replay->active) {
+        fprintf(stderr, "%s:%s():%d BUG:  Infinite Loop.  Active flag will not change\n", __FILE__, __func__, __LINE__);
+        abort();
 #ifdef DONT_BLOCK_REPLAY_ALLOCATE
 		if (++loop > 100000) {
 			fprintf(stderr, "%s:%s():%d abort! abort!\n", __FILE__, __func__, __LINE__);
