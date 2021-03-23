@@ -75,3 +75,5 @@ fabtests/functional/fi_*
 fabtests/unit/fi_*
 fabtests/multinode/fi_*
 pingpong/fi_*
+
+.idea
