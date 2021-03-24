@@ -124,7 +124,7 @@ struct fi_opa1x_hfi1_stl_packet_hdr {
 } __attribute__((__packed__));
 
 
-
+#if 0
 static inline
 void fi_opa1x_hfi1_dump_stl_packet_hdr (struct fi_opa1x_hfi1_stl_packet_hdr * hdr,
 		const char * fn, const unsigned ln) {
@@ -154,7 +154,7 @@ void fi_opa1x_hfi1_dump_stl_packet_hdr (struct fi_opa1x_hfi1_stl_packet_hdr * hd
 
 	return;
 }
-
+#endif
 
 
 
