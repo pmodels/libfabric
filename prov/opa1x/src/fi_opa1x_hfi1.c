@@ -911,24 +911,30 @@ ssize_t fi_opa1x_hfi1_tx_send_rzv (struct fid_ep *ep,
 		uint8_t *sbuf = (uint8_t *)buf;
 
 		if (immediate_byte_count > 0) {
-			tmp[0] = 0;
+			memset(tmp, 0, sizeof(tmp));
 			memcpy((void*)&tmp[0], (const void*)sbuf, immediate_byte_count);
-			sbuf += immediate_byte_count;
 			scb_payload[0] = tmp[0];
+			scb_payload[1] = tmp[1];
+			scb_payload[2] = tmp[2];
+			scb_payload[3] = tmp[3];
+			scb_payload[4] = tmp[4];
+			scb_payload[5] = tmp[5];
+			scb_payload[6] = tmp[6];
+			scb_payload[7] = tmp[7];
+			sbuf += immediate_byte_count;
 		} else {
 			tmp[0] = scb_payload[0] = 0;
+			tmp[1] = scb_payload[1] = 0;
+			tmp[2] = scb_payload[2] = 0;
+			tmp[3] = scb_payload[3] = 0;
+			tmp[4] = scb_payload[4] = 0;
+			tmp[5] = scb_payload[5] = 0;
+			tmp[6] = scb_payload[6] = 0;
+			tmp[7] = scb_payload[7] = 0;
 		}
 		scb_payload += 1;
 
 		uint64_t * sbuf_qw = (uint64_t *)sbuf;
-		unsigned i=0;
-		for (i=0; i<immediate_qw_count; ++i) {
-			tmp[i+1] = scb_payload[i] = sbuf_qw[i];
-		}
-		for (; i<7; ++i) {
-			tmp[i+1] = scb_payload[i] = 0;
-		}
-
 		sbuf_qw += immediate_qw_count;
 
 		if (reliability != OFI_RELIABILITY_KIND_NONE) {	/* compile-time constant expression */
