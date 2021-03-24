@@ -1665,7 +1665,7 @@ ssize_t fi_opa1x_ep_tx_send (struct fid_ep *ep,
 		 * FI_INJECT_COMPLETE.
 		 */
 
-		if (likely(do_cq_completion != 0)) {
+		if (likely(do_cq_completion != 0) && rc == FI_SUCCESS) {
 
 			/*
 			 * Currently all completion types revert to the behavior
@@ -1718,6 +1718,12 @@ ssize_t fi_opa1x_ep_tx_send (struct fid_ep *ep,
 				(uint64_t *)&opa1x_context->byte_counter,
 				caps,
 				reliability);
+
+			if(rc != FI_SUCCESS) {
+				fprintf(stderr, "FATAL:	 rendezvous protocol isn't properly handling EAGAIN\n");
+				fprintf(stderr, " This will cause the application to re-enqueue the operation, causing a double post.  Aborting application\n");
+				abort();
+			}
 
 			/* initialize the completion entry */
 			opa1x_context->flags =  FI_SEND | (caps & (FI_TAGGED | FI_MSG));

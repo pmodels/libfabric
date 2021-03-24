@@ -812,12 +812,14 @@ ssize_t fi_opa1x_hfi1_tx_send_rzv (struct fid_ep *ep,
 		payload_blocks_total;		/* packet payload */
 
 	uint64_t total_credits_available = FI_OPA1X_HFI1_AVAILABLE_CREDITS(pio_state);
-	if (unlikely(total_credits_available < total_credits_needed)) {
+	unsigned loop = 0;
+	while (unlikely(total_credits_available < total_credits_needed)) {
 		FI_OPA1X_HFI1_UPDATE_CREDITS(pio_state, opa1x_ep->tx.pio_credits_addr);
 		total_credits_available = FI_OPA1X_HFI1_AVAILABLE_CREDITS(pio_state);
-		if (total_credits_available < total_credits_needed) {
+		if (total_credits_available < total_credits_needed && loop > 10000) {
 			return -FI_EAGAIN;
 		}
+		loop++;
 	}
 
 	const uint64_t psn = (reliability != OFI_RELIABILITY_KIND_NONE) ?	/* compile-time constant expression */
