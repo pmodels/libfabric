@@ -227,8 +227,10 @@ static void init_hfi_mylabel(void)
 
 static void fini_hfi_mylabel(void)
 {
-	if(__hfi_mylabel != NULL)
+	if(__hfi_mylabel != NULL) {
 		free(__hfi_mylabel);
+		__hfi_mylabel = NULL;
+	}
 }
 
 /* FIXME: This signal handler does not conform to the posix standards described
