@@ -1267,8 +1267,7 @@ uint32_t fi_version(void)
 	return FI_VERSION(FI_MAJOR_VERSION, FI_MINOR_VERSION);
 }
 
-__attribute__((visibility ("default"),EXTERNALLY_VISIBLE))
-int DEFAULT_SYMVER_PRE(fi_open)(uint32_t version, const char *name,
+int fi_open(uint32_t version, const char *name,
 		void *attr, size_t attr_len, uint64_t flags,
 		struct fid **fid, void *context)
 {
@@ -1278,7 +1277,6 @@ int DEFAULT_SYMVER_PRE(fi_open)(uint32_t version, const char *name,
 
 	return -FI_ENOSYS;
 }
-CURRENT_SYMVER(fi_open_, fi_open);
 
 static const char *const errstr[] = {
 	[FI_EOTHER - FI_ERRNO_OFFSET] = "Unspecified error",
