@@ -121,7 +121,7 @@ jobs:
           name: config.log
           path: config.log
   coverity:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - name: Install dependencies (Linux)
         run: |
@@ -157,11 +157,10 @@ jobs:
             --form description="`$PWD/install/bin/fi_info -l`" \
             https://scan.coverity.com/builds?project=ofiwg%2Flibfabric
       - name: Upload build logs
-        if: failure()
         uses: actions/upload-artifact@v2
         with:
-          name: config.log
-          path: config.log
+          name: coverity-build-log.txt
+          path: cov-int/build-log.txt
   macos:
     runs-on: macos-10.15
     steps:
