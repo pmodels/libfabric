@@ -18,11 +18,7 @@ lib_LTLIBRARIES =
 noinst_PROGRAMS =
 bin_PROGRAMS =
 
-if EMBEDDED
-noinst_LTLIBRARIES += src/libfabric.la
-else
 lib_LTLIBRARIES += src/libfabric.la
-endif
 
 pkglib_LTLIBRARIES = $(DL_PROVIDERS)
 
